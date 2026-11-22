@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <h1>Expense Tracker</h1>
+    </header>
+
+    <!-- Status Message Area -->
+    <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
+
+    <!-- Summary Area -->
+    <section class="summary-section" aria-labelledby="summary-heading">
+      <h2 id="summary-heading">Summary</h2>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span class="summary-label">Total Expenses</span>
+          <strong id="total-amount" class="summary-value">$0.00</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Entries</span>
+          <strong id="total-count" class="summary-value">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Expense Form -->
+    <section class="form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading">Add Expense</h2>
+      <form id="expense-form" class="expense-form">
+        <div class="form-group">
+          <label for="expense-description">Description</label>
+          <input
+            type="text"
+            id="expense-description"
+            name="description"
+            placeholder="e.g., Groceries"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="expense-amount">Amount</label>
+          <input
+            type="number"
+            id="expense-amount"
+            name="amount"
+            step="0.01"
+            min="0.01"
+            placeholder="0.00"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="expense-category">Category</label>
+          <select id="expense-category" name="category" required>
+            <option value="">Select a category</option>
+            <option value="food">Food & Dining</option>
+            <option value="transport">Transportation</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="expense-date">Date</label>
+          <input
+            type="date"
+            id="expense-date"
+            name="date"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-primary">Add Expense</button>
+      </form>
+    </section>
+
+    <!-- Category Filter & Expense List Container -->
+    <section class="list-section" aria-labelledby="list-heading">
+      <div class="list-header">
+        <h2 id="list-heading">Expenses</h2>
+        <div class="filter-group">
+          <label for="category-filter">Filter by Category</label>
+          <select id="category-filter" name="categoryFilter">
+            <option value="all">All Categories</option>
+            <option value="food">Food & Dining</option>
+            <option value="transport">Transportation</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <ul id="expense-list" class="expense-list">
+        <li class="empty-state">No expenses recorded yet.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
