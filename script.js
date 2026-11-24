@@ -8,6 +8,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const totalCountEl = document.getElementById('total-count');
   const dateInput = document.getElementById('expense-date');
 
+  const CATEGORY_LABELS = {
+    food: 'Food & Dining',
+    transport: 'Transportation',
+    utilities: 'Utilities',
+    entertainment: 'Entertainment',
+    other: 'Other',
+  };
+
+  const eurFormatter = new Intl.NumberFormat('en-IE', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  let expenses = [];
+
+  function formatCents(cents) {
+    return eurFormatter.format(cents / 100);
+  }
+
+  function showStatus(message) {
+    statusMessage.textContent = message;
+  }
+
+  function updateSummary(items) {
+    const totalCents = items.reduce((sum, item) => sum + item.cents, 0);
+    totalAmountEl.textContent = formatCents(totalCents);
+    totalCountEl.textContent = String(items.length);
+  }
+
+  function createLabeledField(labelText, valueText, fieldClass) {
+    const field = document.createElement('div');
+    field.className = `expense-field ${fieldClass}`;
+
+    const label = document.createElement('span');
+    label.className = 'field-label';
+    label.textContent = labelText;
+
+    const value = document.createElement('span');
+    value.className = 'field-value';
+    value.textContent = valueText;
+
+    field.append(label, value);
+    return field;
+  }
+
+  function renderExpenses() {
+    const selectedCategory = categoryFilter ? categoryFilter.value : 'all';
+    const filtered =
+      !selectedCategory || selectedCategory === 'all'
+        ? expenses
+        : expenses.filter((item) => item.category === selectedCategory);
+
+    updateSummary(filtered);
+    expenseList.textContent = '';
+
+    if (filtered.length === 0) {
+      const emptyItem = document.createElement('li');
+      emptyItem.className = 'empty-state';
+      emptyItem.textContent =
+        expenses.length === 0
+          ? 'No expenses recorded yet.'
+          : 'No expenses match the selected category.';
   if (
     !expenseForm ||
     !categoryFilter ||
@@ -153,101 +217,71 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    filteredExpenses
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .forEach((expense) => {
-        const item = document.createElement('li');
-        item.className = 'expense-item';
+    filtered.forEach((expense) => {
+      const row = document.createElement('li');
+      row.className = 'expense-row';
 
-        const icon = document.createElement('span');
-        icon.className = 'category-icon';
-        icon.setAttribute('aria-hidden', 'true');
-        icon.textContent = categoryIcons[expense.category];
+      const descriptionField = createLabeledField(
+        'Description',
+        expense.description,
+        'expense-description'
+      );
+      const categoryField = createLabeledField(
+        'Category',
+        CATEGORY_LABELS[expense.category] || expense.category,
+        'expense-category'
+      );
+      const dateField = createLabeledField(
+        'Date',
+        expense.date,
+        'expense-date'
+      );
+      const amountField = createLabeledField(
+        'Amount',
+        formatCents(expense.cents),
+        'expense-amount'
+      );
 
-        const details = document.createElement('div');
-        details.className = 'expense-details';
-
-        const description = document.createElement('p');
-        description.className = 'expense-description';
-        description.textContent = expense.description;
-
-        const meta = document.createElement('div');
-        meta.className = 'expense-meta';
-
-        const category = document.createElement('span');
-        category.className = 'expense-category';
-        category.textContent = categoryNames[expense.category];
-
-        const date = document.createElement('span');
-        date.textContent = formatDate(expense.date);
-
-        meta.append(category, date);
-        details.append(description, meta);
-
-        const actions = document.createElement('div');
-        actions.className = 'expense-actions';
-
-        const amount = document.createElement('strong');
-        amount.className = 'expense-amount';
-        amount.textContent = formatCurrency(Number(expense.amount));
-
-        const deleteButton = document.createElement('button');
-        deleteButton.type = 'button';
-        deleteButton.className = 'btn-delete';
-        deleteButton.dataset.deleteId = String(expense.id);
-        deleteButton.setAttribute('aria-label', `Delete ${expense.description}`);
-        deleteButton.title = 'Delete expense';
-        deleteButton.textContent = '×';
-
-        actions.append(amount, deleteButton);
-        item.append(icon, details, actions);
-        expenseList.appendChild(item);
-      });
+      row.append(descriptionField, categoryField, dateField, amountField);
+      expenseList.appendChild(row);
+    });
   }
 
-  function updateSummary() {
-    const total = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
-    totalAmountEl.textContent = formatCurrency(total);
-    totalCountEl.textContent = String(expenses.length);
-  }
+  expenseForm.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-  function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  }
+    const formData = new FormData(expenseForm);
+    const description = String(formData.get('description') || '').trim();
+    const amountNum = Number.parseFloat(String(formData.get('amount') || ''));
+    const category = String(formData.get('category') || '').trim();
+    const date = String(formData.get('date') || '').trim();
 
-  function formatDate(dateString) {
-    const [year, month, day] = dateString.split('-').map(Number);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    }).format(new Date(year, month - 1, day));
-  }
-
-  function getLocalDate() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  function createId() {
-    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-      return window.crypto.randomUUID();
+    if (!description || !Number.isFinite(amountNum) || amountNum <= 0 || !category || !date) {
+      showStatus('Please fill out all fields with a valid positive EUR amount.');
+      return;
     }
 
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const cents = Math.round(amountNum * 100);
+    expenses.push({
+      id: typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      description,
+      cents,
+      category,
+      date,
+    });
+
+    expenseForm.reset();
+    showStatus(`Added "${description}" (${formatCents(cents)}).`);
+    renderExpenses();
+  });
+
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', renderExpenses);
   }
 
-  function showStatus(message, isError = false) {
-    statusMessage.textContent = message;
-    statusMessage.classList.toggle('error', isError);
-  }
+  renderExpenses();
 });
   const CATEGORY_LABELS = {
     food: 'Food & Dining',
