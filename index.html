@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f5f7fb" />
   <title>Expense Tracker</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -39,6 +39,12 @@
         <article class="summary-card count-card">
           <span class="summary-icon count-icon" aria-hidden="true">#</span>
           <span class="summary-label">Total entries</span>
+        <div class="summary-card">
+          <span class="summary-label">Total Expenses</span>
+          <strong id="total-amount" class="summary-value">€0.00</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Entries</span>
           <strong id="total-count" class="summary-value">0</strong>
           <span class="summary-note">Expenses recorded</span>
         </article>
@@ -56,10 +62,31 @@
         <div class="form-group">
           <label for="expense-description">Description</label>
           <input type="text" id="expense-description" name="description" placeholder="e.g. Groceries" maxlength="80" required />
+      <h2 id="form-heading">Add Expense</h2>
+      <form id="expense-form" class="expense-form" novalidate>
+        <div class="form-group">
+          <label for="expense-description">Description</label>
+          <input
+            type="text"
+            id="expense-description"
+            name="description"
+            placeholder="e.g., Coffee"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="expense-amount">Amount ($)</label>
           <input type="number" id="expense-amount" name="amount" step="0.01" min="0.01" placeholder="0.00" inputmode="decimal" required />
+          <label for="expense-amount">Amount (EUR)</label>
+          <input
+            type="number"
+            id="expense-amount"
+            name="amount"
+            step="0.01"
+            min="0.01"
+            placeholder="0.00"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="expense-category">Category</label>
@@ -93,6 +120,7 @@
           <label for="category-filter">Filter category</label>
           <select id="category-filter" name="categoryFilter">
             <option value="all">All categories</option>
+            <option value="all">All</option>
             <option value="food">Food &amp; Dining</option>
             <option value="transport">Transportation</option>
             <option value="utilities">Utilities</option>
