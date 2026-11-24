@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusMessage = document.getElementById('status-message');
   const totalAmountEl = document.getElementById('total-amount');
   const totalCountEl = document.getElementById('total-count');
+  const dateInput = document.getElementById('expense-date');
 
   const CATEGORY_LABELS = {
     food: 'Food & Dining',
@@ -70,6 +71,147 @@ document.addEventListener('DOMContentLoaded', () => {
         expenses.length === 0
           ? 'No expenses recorded yet.'
           : 'No expenses match the selected category.';
+  if (
+    !expenseForm ||
+    !categoryFilter ||
+    !expenseList ||
+    !statusMessage ||
+    !totalAmountEl ||
+    !totalCountEl ||
+    !dateInput
+  ) {
+    console.error('One or more required expense tracker elements are missing.');
+    return;
+  }
+
+  const STORAGE_KEY = 'expense-tracker-expenses';
+  const categoryNames = {
+    food: 'Food & Dining',
+    transport: 'Transportation',
+    utilities: 'Utilities',
+    entertainment: 'Entertainment',
+    other: 'Other'
+  };
+  const categoryIcons = {
+    food: '🍽',
+    transport: '🚗',
+    utilities: '💡',
+    entertainment: '🎬',
+    other: '📦'
+  };
+
+  let expenses = loadExpenses();
+
+  dateInput.value = getLocalDate();
+  renderExpenses();
+  updateSummary();
+
+  expenseForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(expenseForm);
+    const description = String(formData.get('description')).trim();
+    const amount = Number(formData.get('amount'));
+    const category = String(formData.get('category'));
+    const date = String(formData.get('date'));
+
+    if (!description || !Number.isFinite(amount) || amount <= 0 || !categoryNames[category] || !date) {
+      showStatus('Please enter valid expense details.', true);
+      return;
+    }
+
+    const expense = {
+      id: createId(),
+      description,
+      amount: Math.round(amount * 100) / 100,
+      category,
+      date
+    };
+
+    expenses.unshift(expense);
+    saveExpenses();
+    renderExpenses();
+    updateSummary();
+    expenseForm.reset();
+    dateInput.value = getLocalDate();
+    showStatus('Expense added successfully.');
+  });
+
+  categoryFilter.addEventListener('change', renderExpenses);
+
+  expenseList.addEventListener('click', (event) => {
+    const deleteButton = event.target.closest('[data-delete-id]');
+
+    if (!deleteButton) {
+      return;
+    }
+
+    const expenseId = deleteButton.dataset.deleteId;
+    expenses = expenses.filter((expense) => String(expense.id) !== expenseId);
+
+    saveExpenses();
+    renderExpenses();
+    updateSummary();
+    showStatus('Expense deleted.');
+  });
+
+  function loadExpenses() {
+    try {
+      const savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+      if (!Array.isArray(savedExpenses)) {
+        return [];
+      }
+
+      return savedExpenses.filter((expense) =>
+        expense &&
+        expense.id !== undefined &&
+        typeof expense.description === 'string' &&
+        Number.isFinite(Number(expense.amount)) &&
+        categoryNames[expense.category] &&
+        typeof expense.date === 'string'
+      );
+    } catch (error) {
+      console.error('Could not load saved expenses:', error);
+      return [];
+    }
+  }
+
+  function saveExpenses() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+    } catch (error) {
+      console.error('Could not save expenses:', error);
+      showStatus('Your changes could not be saved in this browser.', true);
+    }
+  }
+
+  function renderExpenses() {
+    const selectedCategory = categoryFilter.value;
+    const filteredExpenses = selectedCategory === 'all'
+      ? expenses
+      : expenses.filter((expense) => expense.category === selectedCategory);
+
+    expenseList.replaceChildren();
+
+    if (filteredExpenses.length === 0) {
+      const emptyItem = document.createElement('li');
+      emptyItem.className = 'empty-state';
+
+      const icon = document.createElement('span');
+      icon.className = 'empty-icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = '+';
+
+      const title = document.createElement('strong');
+      title.textContent = expenses.length === 0 ? 'No expenses yet' : 'No expenses in this category';
+
+      const message = document.createElement('span');
+      message.textContent = expenses.length === 0
+        ? 'Add your first expense using the form above.'
+        : 'Try selecting another category.';
+
+      emptyItem.append(icon, title, message);
       expenseList.appendChild(emptyItem);
       return;
     }
