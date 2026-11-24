@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f7fb" />
   <title>Expense Tracker</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="script.js" defer></script>
@@ -10,14 +11,34 @@
 <body>
   <main class="container">
     <header class="app-header">
-      <h1>Expense Tracker</h1>
+      <div class="brand-mark" aria-hidden="true">$</div>
+      <div>
+        <p class="eyebrow">PERSONAL FINANCE</p>
+        <h1>Expense Tracker</h1>
+        <p class="header-description">Keep your spending organized and under control.</p>
+      </div>
     </header>
 
     <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
 
     <section class="summary-section" aria-labelledby="summary-heading">
-      <h2 id="summary-heading">Summary</h2>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR OVERVIEW</p>
+          <h2 id="summary-heading">Summary</h2>
+        </div>
+        <span class="period-label">All time</span>
+      </div>
       <div class="summary-cards">
+        <article class="summary-card total-card">
+          <span class="summary-icon" aria-hidden="true">$</span>
+          <span class="summary-label">Total expenses</span>
+          <strong id="total-amount" class="summary-value">$0.00</strong>
+          <span class="summary-note">Your recorded spending</span>
+        </article>
+        <article class="summary-card count-card">
+          <span class="summary-icon count-icon" aria-hidden="true">#</span>
+          <span class="summary-label">Total entries</span>
         <div class="summary-card">
           <span class="summary-label">Total Expenses</span>
           <strong id="total-amount" class="summary-value">€0.00</strong>
@@ -25,11 +46,22 @@
         <div class="summary-card">
           <span class="summary-label">Entries</span>
           <strong id="total-count" class="summary-value">0</strong>
-        </div>
+          <span class="summary-note">Expenses recorded</span>
+        </article>
       </div>
     </section>
 
     <section class="form-section" aria-labelledby="form-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">START TRACKING</p>
+          <h2 id="form-heading">Add an expense</h2>
+        </div>
+      </div>
+      <form id="expense-form" class="expense-form">
+        <div class="form-group">
+          <label for="expense-description">Description</label>
+          <input type="text" id="expense-description" name="description" placeholder="e.g. Groceries" maxlength="80" required />
       <h2 id="form-heading">Add Expense</h2>
       <form id="expense-form" class="expense-form" novalidate>
         <div class="form-group">
@@ -42,8 +74,9 @@
             required
           />
         </div>
-
         <div class="form-group">
+          <label for="expense-amount">Amount ($)</label>
+          <input type="number" id="expense-amount" name="amount" step="0.01" min="0.01" placeholder="0.00" inputmode="decimal" required />
           <label for="expense-amount">Amount (EUR)</label>
           <input
             type="number"
@@ -55,7 +88,6 @@
             required
           />
         </div>
-
         <div class="form-group">
           <label for="expense-category">Category</label>
           <select id="expense-category" name="category" required>
@@ -67,27 +99,27 @@
             <option value="other">Other</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="expense-date">Date</label>
-          <input
-            type="date"
-            id="expense-date"
-            name="date"
-            required
-          />
+          <input type="date" id="expense-date" name="date" required />
         </div>
-
-        <button type="submit" class="btn-primary">Add Expense</button>
+        <button type="submit" class="btn-primary">
+          <span aria-hidden="true">+</span>
+          Add expense
+        </button>
       </form>
     </section>
 
     <section class="list-section" aria-labelledby="list-heading">
       <div class="list-header">
-        <h2 id="list-heading">Expenses</h2>
+        <div>
+          <p class="eyebrow">TRANSACTION HISTORY</p>
+          <h2 id="list-heading">Your expenses</h2>
+        </div>
         <div class="filter-group">
-          <label for="category-filter">Filter by Category</label>
+          <label for="category-filter">Filter category</label>
           <select id="category-filter" name="categoryFilter">
+            <option value="all">All categories</option>
             <option value="all">All</option>
             <option value="food">Food &amp; Dining</option>
             <option value="transport">Transportation</option>
@@ -97,11 +129,15 @@
           </select>
         </div>
       </div>
-
       <ul id="expense-list" class="expense-list">
-        <li class="empty-state">No expenses recorded yet.</li>
+        <li class="empty-state">
+          <span class="empty-icon" aria-hidden="true">＋</span>
+          <strong>No expenses yet</strong>
+          <span>Add your first expense using the form above.</span>
+        </li>
       </ul>
     </section>
+    <footer class="app-footer">Simple spending. Better awareness.</footer>
   </main>
 </body>
 </html>
