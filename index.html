@@ -26,7 +26,12 @@
       </div>
     </header>
 
-    <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
+    <div
+      id="status-message"
+      class="status-message"
+      role="status"
+      aria-live="polite"
+    ></div>
 
     <section class="summary-section" aria-labelledby="summary-heading">
       <div class="section-heading">
@@ -64,16 +69,31 @@
       </div>
 
       <form id="expense-form" class="expense-form">
+
         <div class="form-group">
           <label for="expense-description">Description</label>
-          <input type="text" id="expense-description" name="description" placeholder="e.g. Groceries" maxlength="80"
-            required />
+          <input
+            type="text"
+            id="expense-description"
+            name="description"
+            placeholder="e.g. Groceries"
+            maxlength="80"
+            required
+          />
         </div>
 
         <div class="form-group">
           <label for="expense-amount">Amount ($)</label>
-          <input type="number" id="expense-amount" name="amount" step="0.01" min="0.01" placeholder="0.00"
-            inputmode="decimal" required />
+          <input
+            type="number"
+            id="expense-amount"
+            name="amount"
+            step="0.01"
+            min="0.01"
+            placeholder="0.00"
+            inputmode="decimal"
+            required
+          />
         </div>
 
         <div class="form-group">
@@ -90,17 +110,24 @@
 
         <div class="form-group">
           <label for="expense-date">Date</label>
-          <input type="date" id="expense-date" name="date" required />
+          <input
+            type="date"
+            id="expense-date"
+            name="date"
+            required
+          />
         </div>
 
         <button type="submit" class="btn-primary">
           <span aria-hidden="true">+</span>
           Add expense
         </button>
+
       </form>
     </section>
 
     <section class="list-section" aria-labelledby="list-heading">
+
       <div class="list-header">
         <div>
           <p class="eyebrow">TRANSACTION HISTORY</p>
@@ -120,17 +147,23 @@
         </div>
       </div>
 
-      <ul id="expense-list" class="expense-list">
+      <ul
+        id="expense-list"
+        class="expense-list"
+        aria-label="List of expenses"
+        aria-live="polite"
+      >
         <li class="empty-state">
           <span class="empty-icon" aria-hidden="true">＋</span>
           <strong>No expenses yet</strong>
           <span>Add your first expense using the form above.</span>
         </li>
       </ul>
+
     </section>
 
     <footer class="app-footer">
-      Simple spending. Better awareness.
+      Simple spending
     </footer>
 
   </main>

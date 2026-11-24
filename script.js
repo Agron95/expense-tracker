@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const expenseForm = document.getElementById('expense-form');
   const categoryFilter = document.getElementById('category-filter');
@@ -92,11 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
   expenseList.addEventListener('click', (event) => {
     const deleteButton = event.target.closest('[data-delete-id]');
 
-    if (!deleteButton) {
+    if (!deleteButton || !expenseList.contains(deleteButton)) {
       return;
     }
 
     const expenseId = deleteButton.dataset.deleteId;
+
+    const expenseExists = expenses.some(
+      (expense) => String(expense.id) === expenseId
+    );
+
+    if (!expenseExists) {
+      return;
+    }
 
     expenses = expenses.filter(
       (expense) => String(expense.id) !== expenseId
@@ -106,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderExpenses();
     updateSummary();
 
-    showStatus('Expense deleted.');
+    showStatus('Expense deleted successfully.');
   });
 
   function loadExpenses() {
@@ -221,9 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const amount = document.createElement('strong');
         amount.className = 'expense-amount';
-        amount.textContent = formatCurrency(
-          Number(expense.amount)
-        );
+        amount.textContent = formatCurrency(Number(expense.amount));
 
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
@@ -233,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'aria-label',
           `Delete ${expense.description}`
         );
-        deleteButton.title = 'Delete expense';
+        deleteButton.title = `Delete ${expense.description}`;
         deleteButton.textContent = '×';
 
         actions.append(amount, deleteButton);
