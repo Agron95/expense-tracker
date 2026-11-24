@@ -59,6 +59,8 @@ h2 {
   display: none;
 }
 
+/* Summary */
+
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -83,6 +85,53 @@ h2 {
   font-size: 1.5rem;
   margin-top: 0.25rem;
 }
+
+/* Category Spending Totals */
+
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin-bottom: 0.25rem;
+}
+
+.section-header p {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.category-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.category-total-card {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.overall-category-total {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+}
+
+.overall-category-total .summary-value {
+  color: var(--primary);
+  font-size: 1.75rem;
+}
+
+/* Expense Form */
 
 .expense-form {
   display: grid;
@@ -133,6 +182,8 @@ select:focus {
   background-color: var(--primary-hover);
 }
 
+/* Expense List */
+
 .list-header {
   display: flex;
   flex-wrap: wrap;
@@ -157,4 +208,37 @@ select:focus {
   color: var(--muted);
   font-size: 0.95rem;
   padding: 1rem 0;
+}
+
+/* Responsive Design */
+
+@media (max-width: 480px) {
+  body {
+    padding: 1rem 0.75rem;
+  }
+
+  .container {
+    gap: 1rem;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .category-totals,
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .list-header {
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
 }

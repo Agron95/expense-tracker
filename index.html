@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,7 @@
           <span class="summary-label">Total Expenses</span>
           <strong id="total-amount" class="summary-value">$0.00</strong>
         </div>
+
         <div class="summary-card">
           <span class="summary-label">Entries</span>
           <strong id="total-count" class="summary-value">0</strong>
@@ -31,9 +33,50 @@
       </div>
     </section>
 
+    <!-- Category Spending Totals -->
+    <section class="category-totals-section" aria-labelledby="category-totals-heading">
+      <div class="section-header">
+        <h2 id="category-totals-heading">Category Spending Totals</h2>
+        <p>Totals across all entries, regardless of active filters.</p>
+      </div>
+
+      <div class="category-totals">
+        <div class="category-total-card">
+          <span class="summary-label">Food & Dining</span>
+          <strong id="food-total" class="summary-value">$0.00</strong>
+        </div>
+
+        <div class="category-total-card">
+          <span class="summary-label">Transportation</span>
+          <strong id="transport-total" class="summary-value">$0.00</strong>
+        </div>
+
+        <div class="category-total-card">
+          <span class="summary-label">Utilities</span>
+          <strong id="utilities-total" class="summary-value">$0.00</strong>
+        </div>
+
+        <div class="category-total-card">
+          <span class="summary-label">Entertainment</span>
+          <strong id="entertainment-total" class="summary-value">$0.00</strong>
+        </div>
+
+        <div class="category-total-card">
+          <span class="summary-label">Other</span>
+          <strong id="other-total" class="summary-value">$0.00</strong>
+        </div>
+      </div>
+
+      <div class="overall-category-total">
+        <span class="summary-label">Overall Category Total</span>
+        <strong id="category-overall-total" class="summary-value">$0.00</strong>
+      </div>
+    </section>
+
     <!-- Expense Form -->
     <section class="form-section" aria-labelledby="form-heading">
       <h2 id="form-heading">Add Expense</h2>
+
       <form id="expense-form" class="expense-form">
         <div class="form-group">
           <label for="expense-description">Description</label>
@@ -89,6 +132,7 @@
     <section class="list-section" aria-labelledby="list-heading">
       <div class="list-header">
         <h2 id="list-heading">Expenses</h2>
+
         <div class="filter-group">
           <label for="category-filter">Filter by Category</label>
           <select id="category-filter" name="categoryFilter">
